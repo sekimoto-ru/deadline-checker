@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>メール締切チェッカー</title>
+
+    <!-- Google APIs -->
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client"></script>
+    <script>
+        const SCOPES = 'https://www.googleapis.com/auth/gmail.modify';
+        const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest';
+    </script>
+
+    <!-- Google API認証情報 (Google Client ID, Gemini API Key)-->
+    <script src="google_api_credentials.js"></script>
+
+    <!-- スタイルシート -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>メール締切チェッカー</h1>
+        <div class="button-container">
+            <button id="login_button">ログイン</button>
+            <button id="logout_button" style="display: none;">ログアウト</button>
+        </div>
+        <div class="content-wrapper" style="display: none;">
+            <div class="email-container">
+                <div id="emails">
+                    <!-- メールリストがここに表示される -->
+                </div>
+            </div>
+
+            <div class="calendar-container">
+                <div id="calendar-header">
+                    <button id="prev-month">&lt;</button>
+                    <span id="current-month"></span>
+                    <button id="next-month">&gt;</button>
+                </div>
+                <div id="calendar">
+                    <!-- カレンダーがここに表示される -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- メール詳細モーダル -->
+    <div id="email-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modal-email-content"></div>
+        </div>
+    </div>
+
+    <!-- Google API, Google Identity Services の読み込み -->
+    <script src="apis.js"></script>
+
+    <!-- ログインボタンのクリックイベントを設定 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('login_button').addEventListener('click', () => {
+                window.dispatchEvent(new CustomEvent('initiateLogin'));
+            });
+        });
+    </script>
+
+    <script src="google_login_handler.js"></script>
+    <script src="email_processor.js"></script>
+    <script src="mail_view.js"></script>
+    <script src="calendar_view.js"></script>
+</body>
+
+</html>
