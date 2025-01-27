@@ -147,9 +147,9 @@ function handleAuthSuccess(response) {
     if (calendarContainer) calendarContainer.style.display = 'block';
 
     // すでにスクリプトが存在するか確認
-    if (!document.querySelector('script[src="main.js"]')) {
+    if (!document.querySelector('script[src="js/main.js"]')) {
         const script = document.createElement('script');
-        script.src = 'main.js';
+        script.src = 'js/main.js';
         script.onload = () => {
             window.dispatchEvent(new CustomEvent('authSuccess', { detail: response }));
         };
