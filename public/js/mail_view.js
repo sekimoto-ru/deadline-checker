@@ -276,71 +276,29 @@ async function listMessages() {
                                 aiDeadlineBtn.disabled = true;
                                 aiDeadlineBtn.textContent = 'AIが分析中...';
 
-                                console.log('Gemini APIを呼び出します:', {
-                                    apiKey: AUTH_CONFIG.GEMINI_API_KEY ? 'exists' : 'missing',
+                                console.log('サーバーにリクエストを送信:', {
                                     deadlinesCount: info.deadlines.length,
                                     bodyLength: body.length
                                 });
 
-                                const response = await fetch('https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent', {
+                                const response = await fetch('/api/analyze-deadlines', {
                                     method: 'POST',
                                     headers: {
-                                        'Content-Type': 'application/json',
-                                        'x-goog-api-key': AUTH_CONFIG.GEMINI_API_KEY
+                                        'Content-Type': 'application/json'
                                     },
                                     body: JSON.stringify({
-                                        contents: [{
-                                            parts: [{
-                                                text: `以下のメールから最も重要な締切日を1つ選んでください。複数の候補がある場合は、文脈から最も重要そうな締切日を1つ選択してください。
-                                                締切日の候補: ${info.deadlines.map(d => d.toLocaleDateString('ja-JP')).join(', ')}
-                                                
-                                                件名: ${subject}
-                                                本文:
-                                                ${body}
-                                                
-                                                回答は以下のJSON形式で返してください:
-                                                {
-                                                    "selected_date": "YYYY-MM-DD",
-                                                    "reason": "選択理由を1文で"
-                                                }`
-                                            }]
-                                        }]
+                                        subject: subject,
+                                        body: body,
+                                        deadlines: info.deadlines.map(d => d.toISOString().split('T')[0])
                                     })
                                 });
 
-                                console.log('Gemini APIからレスポンスを受信:', {
-                                    status: response.status,
-                                    ok: response.ok
-                                });
-
                                 if (!response.ok) {
-                                    const errorData = await response.json().catch(() => null);
-                                    throw new Error(`AI APIの呼び出しに失敗しました: ${response.status} ${response.statusText}${errorData ? '\n' + JSON.stringify(errorData) : ''}`);
+                                    const errorData = await response.json();
+                                    throw new Error(errorData.error || 'AI分析に失敗しました');
                                 }
 
-                                const result = await response.json();
-                                console.log('Gemini APIの結果:', result);
-
-                                let aiResponse;
-                                try {
-                                    // APIレスポンスの中身を確認
-                                    console.log('APIレスポンスの内容:', result.candidates[0].content.parts[0].text);
-                                    // ```json と ``` を削除してJSONをパース
-                                    const text = result.candidates[0].content.parts[0].text
-                                        .replace(/^```json\s*/, '')  // 先頭の ```json を削除
-                                        .replace(/```[\s]*$/g, '')   // 末尾の ``` を削除（複数行の可能性を考慮）
-                                        .trim();
-                                    console.log('パース前のテキスト:', text);  // デバッグ用
-                                    aiResponse = JSON.parse(text);
-                                    console.log('パース後のオブジェクト:', aiResponse);  // デバッグ用
-                                } catch (parseError) {
-                                    console.error('JSONパースエラー:', {
-                                        error: parseError,
-                                        text: result.candidates[0].content.parts[0].text,
-                                        cleanedText: text
-                                    });
-                                    throw new Error('AIの応答をJSONとして解析できませんでした');
-                                }
+                                const aiResponse = await response.json();
 
                                 // 日付の妥当性チェック
                                 const parsedDate = new Date(aiResponse.selected_date);
@@ -461,71 +419,29 @@ async function listMessages() {
                                 modalAiDeadlineBtn.disabled = true;
                                 modalAiDeadlineBtn.textContent = 'AIが分析中...';
 
-                                console.log('Gemini APIを呼び出します:', {
-                                    apiKey: AUTH_CONFIG.GEMINI_API_KEY ? 'exists' : 'missing',
+                                console.log('サーバーにリクエストを送信:', {
                                     deadlinesCount: info.deadlines.length,
                                     bodyLength: body.length
                                 });
 
-                                const response = await fetch('https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent', {
+                                const response = await fetch('/api/analyze-deadlines', {
                                     method: 'POST',
                                     headers: {
-                                        'Content-Type': 'application/json',
-                                        'x-goog-api-key': AUTH_CONFIG.GEMINI_API_KEY
+                                        'Content-Type': 'application/json'
                                     },
                                     body: JSON.stringify({
-                                        contents: [{
-                                            parts: [{
-                                                text: `以下のメールから最も重要な締切日を1つ選んでください。複数の候補がある場合は、文脈から最も重要そうな締切日を1つ選択してください。
-                                                締切日の候補: ${info.deadlines.map(d => d.toLocaleDateString('ja-JP')).join(', ')}
-                                                
-                                                件名: ${subject}
-                                                本文:
-                                                ${body}
-                                                
-                                                回答は以下のJSON形式で返してください:
-                                                {
-                                                    "selected_date": "YYYY-MM-DD",
-                                                    "reason": "選択理由を1文で"
-                                                }`
-                                            }]
-                                        }]
+                                        subject: subject,
+                                        body: body,
+                                        deadlines: info.deadlines.map(d => d.toISOString().split('T')[0])
                                     })
                                 });
 
-                                console.log('Gemini APIからレスポンスを受信:', {
-                                    status: response.status,
-                                    ok: response.ok
-                                });
-
                                 if (!response.ok) {
-                                    const errorData = await response.json().catch(() => null);
-                                    throw new Error(`AI APIの呼び出しに失敗しました: ${response.status} ${response.statusText}${errorData ? '\n' + JSON.stringify(errorData) : ''}`);
+                                    const errorData = await response.json();
+                                    throw new Error(errorData.error || 'AI分析に失敗しました');
                                 }
 
-                                const result = await response.json();
-                                console.log('Gemini APIの結果:', result);
-
-                                let aiResponse;
-                                try {
-                                    // APIレスポンスの中身を確認
-                                    console.log('APIレスポンスの内容:', result.candidates[0].content.parts[0].text);
-                                    // ```json と ``` を削除してJSONをパース
-                                    const text = result.candidates[0].content.parts[0].text
-                                        .replace(/^```json\s*/, '')  // 先頭の ```json を削除
-                                        .replace(/```[\s]*$/g, '')   // 末尾の ``` を削除（複数行の可能性を考慮）
-                                        .trim();
-                                    console.log('パース前のテキスト:', text);  // デバッグ用
-                                    aiResponse = JSON.parse(text);
-                                    console.log('パース後のオブジェクト:', aiResponse);  // デバッグ用
-                                } catch (parseError) {
-                                    console.error('JSONパースエラー:', {
-                                        error: parseError,
-                                        text: result.candidates[0].content.parts[0].text,
-                                        cleanedText: text
-                                    });
-                                    throw new Error('AIの応答をJSONとして解析できませんでした');
-                                }
+                                const aiResponse = await response.json();
 
                                 // 日付の妥当性チェック
                                 const parsedDate = new Date(aiResponse.selected_date);
