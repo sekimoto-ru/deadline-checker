@@ -12,9 +12,6 @@ Icon
 .VolumeIcon.icns
 .com.apple.timemachine.donotpresent
 
-# Google API認証情報ファイル
-google_api_credentials.js
-
 # Cursorの設定ファイル
 .cursorrules
 
