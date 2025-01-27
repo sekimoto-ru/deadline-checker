@@ -1,5 +1,5 @@
 # ベースイメージとして公式Node.jsイメージを使用
-FROM node:16
+FROM node:22
 
 # アプリケーションディレクトリを作成
 WORKDIR /usr/src/app

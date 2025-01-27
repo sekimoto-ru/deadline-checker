@@ -281,7 +281,7 @@ async function listMessages() {
                                     bodyLength: body.length
                                 });
 
-                                const response = await fetch('/api/analyze-deadlines', {
+                                const response = await fetch('./api/analyze-deadlines', {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json'
@@ -424,7 +424,7 @@ async function listMessages() {
                                     bodyLength: body.length
                                 });
 
-                                const response = await fetch('/api/analyze-deadlines', {
+                                const response = await fetch('./api/analyze-deadlines', {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json'
