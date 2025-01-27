@@ -12,11 +12,11 @@ Icon
 .VolumeIcon.icns
 .com.apple.timemachine.donotpresent
 
-# Google API認証情報ファイル
-google_api_credentials.js
-
 # Cursorの設定ファイル
 .cursorrules
 
 # Windsurfの設定ファイル
 .windsurfrules
+
+# Node.jsの設定ファイル
+.env

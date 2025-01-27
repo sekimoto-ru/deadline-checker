@@ -1,7 +1,20 @@
+let AUTH_CONFIG = null;
+
+/**
+ * 認証設定の取得
+ */
+async function fetchAuthConfig() {
+    try {
+        const response = await fetch('/api/auth-config');
+        AUTH_CONFIG = await response.json();
+    } catch (error) {
+        console.error('認証設定の取得に失敗:', error);
+    }
+}
+
 /**
  * ログインボタンの設定
  */
-
 function setupLoginButton() {
     const loginButton = document.getElementById('login_button');
     const logoutButton = document.getElementById('logout_button');
@@ -34,11 +47,9 @@ function setupLoginButton() {
     }
 }
 
-
 /**
  * ログアウト処理
  */
-
 function handleLogout() {
     const token = gapi.client.getToken();
     if (token !== null) {
@@ -72,8 +83,11 @@ function handleLogout() {
 /**
  * 保存されたトークンをチェック
  */
+async function checkStoredToken() {
+    if (!AUTH_CONFIG) {
+        await fetchAuthConfig();
+    }
 
-function checkStoredToken() {
     const token = localStorage.getItem('gmail_token');
     const loginButton = document.getElementById('login_button');
 
@@ -95,7 +109,7 @@ function checkStoredToken() {
 
         gapi.client.setToken({
             access_token: token,
-            scope: SCOPES
+            scope: AUTH_CONFIG.SCOPES
         });
         handleAuthSuccess({ access_token: token });
     } else {
@@ -108,7 +122,6 @@ function checkStoredToken() {
 /**
  * 認証成功時の処理
  */
-
 function handleAuthSuccess(response) {
     console.log('認証成功');
     // トークンとタイムスタンプを保存
@@ -158,9 +171,12 @@ function setupLogoutButton() {
     }
 }
 
-// UIの初期化
-setupLoginButton();
-setupLogoutButton();  // ログアウトボタンの初期化を追加
+// 初期化
+(async () => {
+    await fetchAuthConfig();
+    setupLoginButton();
+    setupLogoutButton();
+})();
 
 // 初期化時にトークンをチェック
 window.addEventListener('gapiInitialized', () => {
@@ -169,10 +185,14 @@ window.addEventListener('gapiInitialized', () => {
 
 // イベントリスナーを設定
 window.addEventListener('initiateLogin', async () => {
+    if (!AUTH_CONFIG) {
+        await fetchAuthConfig();
+    }
+
     try {
         const client = google.accounts.oauth2.initTokenClient({
             client_id: AUTH_CONFIG.CLIENT_ID,
-            scope: SCOPES,
+            scope: AUTH_CONFIG.SCOPES,
             callback: handleAuthSuccess
         });
 
