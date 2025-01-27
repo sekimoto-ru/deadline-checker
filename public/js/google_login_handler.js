@@ -1,5 +1,3 @@
-let AUTH_CONFIG = null;
-
 /**
  * 認証設定の取得
  */
