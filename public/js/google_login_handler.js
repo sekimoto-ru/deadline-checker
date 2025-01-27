@@ -3,7 +3,7 @@
  */
 async function fetchAuthConfig() {
     try {
-        const response = await fetch('/api/auth-config');
+        const response = await fetch('./api/auth-config');
         AUTH_CONFIG = await response.json();
     } catch (error) {
         console.error('認証設定の取得に失敗:', error);
