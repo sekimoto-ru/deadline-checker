@@ -2,8 +2,8 @@ function waitForAPIs() {
     if (typeof gapi !== 'undefined' && typeof google !== 'undefined' && typeof AUTH_CONFIG !== 'undefined') {
         // 読み込むスクリプトファイルの配列
         const scripts = [
-            'google_api_loader.js',
-            'google_login_handler.js'
+            'js/google_api_loader.js',
+            'js/google_login_handler.js'
         ];
 
         // 配列内の各スクリプトを順番に読み込む

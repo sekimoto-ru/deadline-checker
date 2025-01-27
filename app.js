@@ -9,6 +9,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 // OAuth2クライアントの設定
 const oauth2Client = new google.auth.OAuth2(

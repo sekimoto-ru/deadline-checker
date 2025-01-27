@@ -5,8 +5,12 @@ const dotenv = require('dotenv');
 dotenv.config();
 const app = express();
 
-// 静的ファイルの提供
-app.use(express.static('.'));
+// 静的ファイルを提供
+app.use(express.static(path.join(__dirname, 'public')));
+
+// EJS テンプレートエンジンを使用
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 // 認証設定を提供するエンドポイント
 app.get('/api/auth-config', (req, res) => {
@@ -17,9 +21,9 @@ app.get('/api/auth-config', (req, res) => {
     });
 });
 
-// ルートハンドラー
+// ルートハンドラー (EJS テンプレートのレンダリング)
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.render('index', { title: 'Welcome to the Home Page' });
 });
 
 const PORT = process.env.PORT || 3000;
