@@ -1,0 +1,19 @@
+{
+  "name": "deadline-checker",
+  "version": "1.0.0",
+  "description": "Gmailアカウント内のメールを解析し、締切日時を自動で検出・管理するWebアプリケーションです。 メールの山から重要な締切を見逃さないようにサポートします。",
+  "main": "main.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "googleapis": "^144.0.0"
+  }
+}

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>締切チェッカー</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .auth-section {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .auth-button {
+            display: inline-block;
+            background-color: #4285f4;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .auth-button:hover {
+            background-color: #3367d6;
+        }
+        .deadline-list {
+            margin-top: 20px;
+        }
+        .deadline-item {
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+        }
+        .deadline-subject {
+            font-weight: bold;
+            color: #333;
+        }
+        .deadline-date {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .deadline-snippet {
+            color: #777;
+            margin-top: 5px;
+            font-size: 0.9em;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>締切チェッカー</h1>
+        
+        <div class="auth-section">
+            <% if (authUrl) { %>
+                <a href="<%= authUrl %>" class="auth-button">Gmailでログイン</a>
+            <% } else { %>
+                <button onclick="fetchDeadlines()" class="auth-button">締切を確認する</button>
+            <% } %>
+        </div>
+
+        <div class="loading">
+            読み込み中...
+        </div>
+
+        <div id="deadlines" class="deadline-list"></div>
+    </div>
+
+    <script>
+        async function fetchDeadlines() {
+            const loadingDiv = document.querySelector('.loading');
+            const deadlinesDiv = document.getElementById('deadlines');
+            
+            loadingDiv.style.display = 'block';
+            deadlinesDiv.innerHTML = '';
+
+            try {
+                const response = await fetch('/api/deadlines');
+                const deadlines = await response.json();
+
+                if (response.ok) {
+                    deadlines.forEach(deadline => {
+                        const deadlineElement = document.createElement('div');
+                        deadlineElement.className = 'deadline-item';
+                        deadlineElement.innerHTML = `
+                            <div class="deadline-subject">${deadline.subject}</div>
+                            <div class="deadline-date">${deadline.date}</div>
+                            <div class="deadline-snippet">${deadline.snippet}</div>
+                        `;
+                        deadlinesDiv.appendChild(deadlineElement);
+                    });
+                } else {
+                    throw new Error(deadlines.error || 'エラーが発生しました');
+                }
+            } catch (error) {
+                deadlinesDiv.innerHTML = `<p style="color: red;">エラー: ${error.message}</p>`;
+            } finally {
+                loadingDiv.style.display = 'none';
+            }
+        }
+
+        // 認証後に自動で締切を取得
+        <% if (!authUrl) { %>
+            window.onload = fetchDeadlines;
+        <% } %>
+    </script>
+</body>
+</html>

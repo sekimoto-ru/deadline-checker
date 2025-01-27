@@ -95,7 +95,7 @@ function checkStoredToken() {
 
         gapi.client.setToken({
             access_token: token,
-            scope: SCOPES
+            scope: AUTH_CONFIG.SCOPES
         });
         handleAuthSuccess({ access_token: token });
     } else {
@@ -172,7 +172,7 @@ window.addEventListener('initiateLogin', async () => {
     try {
         const client = google.accounts.oauth2.initTokenClient({
             client_id: AUTH_CONFIG.CLIENT_ID,
-            scope: SCOPES,
+            scope: AUTH_CONFIG.SCOPES,
             callback: handleAuthSuccess
         });
 

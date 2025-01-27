@@ -22,7 +22,7 @@ async function initializeGoogleAuth() {
         // GISクライアントの初期化
         const client = google.accounts.oauth2.initTokenClient({
             client_id: AUTH_CONFIG.CLIENT_ID,
-            scope: SCOPES,
+            scope: AUTH_CONFIG.SCOPES,
             callback: (response) => {
                 if (response.error !== undefined) {
                     console.error('GIS初期化エラー:', response);
